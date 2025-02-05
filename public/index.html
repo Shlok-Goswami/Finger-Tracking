@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hand Tracking Drawing</title>
+    <link rel="stylesheet" href="mainstyle.css">
+</head>
+<body>
+    <div class="container">
+        <button id="startWebcam">Start Webcam</button>
+        <button id="saveDrawing">Save Drawing</button>
+        
+        <div class="canvas-container">
+            <div class="webcam"></div>
+            <canvas id="drawingCanvas"></canvas>
+            <div class="toolbar-container">
+                <button id="toolbarButton">Tools</button>
+                <div class="toolbar">
+
+                    <label for="colorPicker">Color:</label>
+                    <input type="color" id="colorPicker">
+
+                    <label for="brushSize">Brush Size:</label>
+                    <input type="range" id="brushSize" min="2" max="20" value="5">
+
+                    <label for="shapeSelect">Shape:</label>
+                    <select id="shapeSelect">
+                        <option value="free">--select--</option>
+                        <option value="rectangle">Rectangle</option>
+                        <option value="circle">Circle</option>
+                        <option value="line">Line</option>
+                    </select>
+
+                    <button id="eraser">Eraser</button>
+                    <button id="clearCanvas">Clear Canvas</button>
+                </div>
+
+                <button id="undo">Undo</button>
+                <button id="redo">Redo</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="mainscript.js"></script>
+</body>
+</html>
