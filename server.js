@@ -1,35 +1,26 @@
-const spawner = require('child_process').spawn;
-
-function copy(arr){
-    let ans=[];
-    let i=0;
-     arr.forEach(e => {
-        ans.push(e);
-    });
-    return ans;
-}
-let arr=[];
-
-const python_process = spawner('python', ['./main.py', JSON.stringify([0])]);
-python_process.stdout.on('data',(data) =>{
-
-    data=(data+"").split(',');
-    arr=copy(data);
-});
-
 const express = require("express");
+const { spawn } = require("child_process");
+const path = require("path");
 const app = express();
-const PORT = 3000;
-
-app.get("/api/data", (req, res) => {
-    const data = { num1: arr[0], num2: arr[1], num3:arr[2] , num4:arr[3] };
-    res.json(data);
-});
-
+app.use(express.json({ limit: "10mb" })); 
 app.use(express.static("public"));
 
-app.post("/run-function", (req) => {
-    console.log("Received from frontend:", req.body);
+app.use(express.json({ limit: "5mb" }));
+const pythonProcess = spawn("python", ["main.py"]);
+let arr="";
+pythonProcess.stdout.on("data", (data) => {
+   arr=data.toString();
+   console.log("Server: " + data.toString())
 });
+app.post("/frame", (req, res) => {
+    if (req.body.image) {
+        pythonProcess.stdin.write(req.body.image + "\n");
+    }
+    res.json({ status: "received" });
+});
+app.get("/coordinates",(req,res) => {
+        res.status(201).json({ data: arr});
+})
+pythonProcess.stderr.on("data", (data) => console.error("Python Error:", data.toString()));
 
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+app.listen(8000, () => console.log("Server running on port http://localhost:8000/"));

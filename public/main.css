@@ -1,0 +1,28 @@
+*{
+    margin: 0px;
+    padding: 0px;
+    background-color: rgb(255, 255, 255);
+}
+body{
+    padding-top: 10px;
+}
+canvas{
+    border: 1px solid greenyellow;
+}
+#svg-container{
+    position: absolute;
+    /* transform: translate(101%,-100%); */
+    z-index: 10;
+    background-color: transparent;
+    height: fit-content;
+    width: fit-content;
+}
+#drawingBoard{
+   
+    position: absolute;
+    height: fit-content;
+    width: fit-content;
+    transform: translate(101%,-100%);
+    z-index: 10;
+    overflow: hidden;
+}
