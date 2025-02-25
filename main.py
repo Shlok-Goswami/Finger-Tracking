@@ -9,7 +9,7 @@ mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(min_detection_confidence=0.5, min_tracking_confidence=0.5, static_image_mode=False)
 mp_draw = mp.solutions.drawing_utils
 
-FRAME_DELAY = 1 / 30  # Target 30 FPS
+FRAME_DELAY = 1 / 25  # Target 30 FPS
 
 for line in sys.stdin:
     start_time = time.time()

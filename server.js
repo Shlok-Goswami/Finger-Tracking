@@ -5,7 +5,7 @@ const app = express();
 app.use(express.json({ limit: "10mb" })); 
 app.use(express.static("public"));
 
-app.use(express.json({ limit: "5mb" }));
+
 const pythonProcess = spawn("python", ["main.py"]);
 let arr="";
 pythonProcess.stdout.on("data", (data) => {
