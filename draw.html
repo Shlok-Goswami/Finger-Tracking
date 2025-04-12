@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Drawing Studio - Draw Motion</title>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  </head>
+  <body class="bg-gray-50">
+    <!-- <div id="loadingSpinner" class="flex justify-center items-center h-screen">
+      <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500"></div>
+    </div> -->
+    <div id="loadingSpinner" class="flex justify-center items-center h-screen bg-gray-100">
+      <div class="flex space-x-1">
+        <div class="h-3 w-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full animate-bounce-custom delay-0"></div>
+        <div class="h-3 w-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full animate-bounce-custom delay-200"></div>
+        <div class="h-3 w-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full animate-bounce-custom delay-400"></div>
+      </div>
+    </div>
+    <div id="mainContent" class="hidden">
+    <nav class="bg-white shadow-lg fixed w-full top-0 z-50">
+      <div class="container mx-auto px-6 py-4">
+        <div class="flex items-center justify-between">
+          <a href="/" class="text-3xl font-bold">
+            <span class="gradient-text">Draw Motion</span>
+          </a>
+          <div class="flex items-center space-x-8">
+            <a href="/" class="nav-link">Home</a>
+            <a href="/draw.html" class="nav-link">Studio</a>
+            <a href="features" class="nav-link">Features</a>
+            <button id="loginBtn" class="btn btn-primary">
+              <i class="fas fa-user mr-2"></i>Login
+            </button>
+            <button id="profileBtn" class="btn btn-primary hidden"><i class="fas fa-user-circle mr-2"></i>Profile</button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="studio-container min-h-screen pt-24 pb-12 px-6">
+      <div class="container mx-auto">
+        <div class="mb-8">
+          <h1 class="text-4xl font-bold mb-4">
+            Drawing <span class="gradient-text">Studio</span>
+          </h1>
+          <p class="text-gray-600">Create amazing artwork with your hand gestures</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+          <!-- Camera Feed -->
+          <div class="canvas-container">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-xl font-semibold text-gray-800">
+                <i class="fas fa-video mr-2 text-indigo-600"></i>Camera Feed
+              </h2>
+              <!-- <div class="flex space-x-2">
+                <button class="px-3 py-1 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm">
+                  <i class="fas fa-expand mr-1"></i>Fullscreen
+                </button>
+              </div> -->
+            </div>
+            <!-- <video
+              id="video"
+              class="w-full rounded-xl shadow-inner transform scale-x-[-1]"
+              playsinline
+              autoplay
+            ></video> -->
+
+            <canvas id="canvas" class="rounded-xl shadow-inner w-full"></canvas> 
+          </div>
+
+          <!-- Drawing Canvas -->
+          <div class="canvas-container">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-xl font-semibold text-gray-800">
+                <i class="fas fa-paint-brush mr-2 text-purple-600"></i>Canvas
+              </h2>
+              <div class="flex space-x-2">
+                <button id="clearBtn" class="px-3 py-1 rounded-lg bg-red-100 hover:bg-red-200 text-red-700 text-sm">
+                  <i class="fas fa-trash-alt mr-1"></i>Clear
+                </button>
+                <button id="saveBtn" class="px-3 py-1 rounded-lg bg-green-100 hover:bg-green-200 text-green-700 text-sm">
+                  <i class="fas fa-download mr-1"></i>Save
+                </button>
+              </div>
+            </div>
+            <div id="drawingBoard" >
+              <canvas id="drawingCanvas" class="rounded-xl shadow-inner border-2 border-black-900 w-full"></canvas>
+              <div id="svg-container"></div>
+              <!-- <div id="toolsMenu" class="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white shadow-lg rounded-xl p-4 space-y-4 w-16">
+                <button class="tool-btn" data-tool="brush">
+                  <i class="fas fa-paint-brush text-purple-600 text-2xl"></i>
+                </button>
+                <button class="tool-btn" data-tool="eraser">
+                  <i class="fas fa-eraser text-red-600 text-2xl"></i>
+                </button>
+                <button class="tool-btn" data-tool="colors">
+                  <i class="fas fa-palette text-blue-600 text-2xl"></i>
+                </button>
+                <button class="tool-btn" data-tool="settings">
+                  <i class="fas fa-sliders-h text-gray-600 text-2xl"></i>
+                </button>
+              </div> -->
+              <div id="shaper"></div>
+              <div class="customTools" id="brush"><i class="fas fa-paint-brush"></i></div>
+              <div class="customTools" id="brushSize"><i class="fas fa-expand-arrows-alt"></i></div>
+              <div class="customTools" id="erasor"><i class="fas fa-eraser"></i></div>
+              <div class="customTools" id="undo"><i class="fas fa-undo"></i></div>
+              <div class="customTools" id="redo"><i class="fas fa-redo"></i></div>
+              <div class="customTools" id="clearCanvas"><i class="fas fa-trash"></i></div>
+              <div class="size" id="size"><input id="range" type="range" min="0" max="100" title="Adjust the value"/></div>
+              <div class="customTools" id="color"><i class="fas fa-palette"></i></div>
+              <div class="color-container" id="color-container">
+                    <div class="colorValues" id="black"></div>
+                    <div class="colorValues" id="red"></div>
+                    <div class="colorValues" id="blue"></div>
+                    <div class="colorValues" id="green"></div>
+                    <div class="colorValues" id="yellow"></div>
+                    <div class="colorValues" id="orange"></div>
+              </div>
+              <div class="customTools" id="shape"><i class="fas fa-shapes"></i></div>
+              <div class="shape-container" id="shape-container">
+                  <div class="shapeValues" id="rectangle"><div style="width: 30px;height: 30px; border:2px solid black;"></div></div>
+                  <div class="shapeValues" id="circle"><div style="width: 30px;height: 30px; border:2px solid black;border-radius: 50%;"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+        <!-- Tools Section -->
+        <!-- <div class="mt-8 bg-white rounded-2xl shadow-lg p-6">
+          <h3 class="text-xl font-semibold mb-4">Drawing Tools</h3>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer">
+              <i class="fas fa-paint-brush text-2xl text-indigo-600 mb-2"></i>
+              <h4 class="font-medium">Brush</h4>
+            </div>
+            <div class="p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer">
+              <i class="fas fa-eraser text-2xl text-purple-600 mb-2"></i>
+              <h4 class="font-medium">Eraser</h4>
+            </div>
+            <div class="p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer">
+              <i class="fas fa-palette text-2xl text-blue-600 mb-2"></i>
+              <h4 class="font-medium">Colors</h4>
+            </div>
+            <div class="p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer">
+              <i class="fas fa-sliders-h text-2xl text-pink-600 mb-2"></i>
+              <h4 class="font-medium">Settings</h4>
+            </div>
+          </div>
+        </div> -->
+      </div>
+    </main>
+
+    <footer class="bg-gray-900 text-white py-12">
+      <div class="container mx-auto px-6">
+        <div class="grid md:grid-cols-4 gap-12 mb-8">
+          <div>
+            <h4 class="text-2xl font-bold mb-4">Draw Motion</h4>
+            <p class="text-gray-400">
+              Create amazing artwork with the power of AI and hand gestures.
+            </p>
+          </div>
+          <div>
+            <h5 class="text-lg font-semibold mb-4">Quick Links</h5>
+            <ul class="space-y-2">
+              <li><a href="/" class="text-gray-400 hover:text-white transition-colors">Home</a></li>
+              <li><a href="/draw.html" class="text-gray-400 hover:text-white transition-colors">Studio</a></li>
+              <li><a href="#features" class="text-gray-400 hover:text-white transition-colors">Features</a></li>
+            </ul>
+          </div>
+          <div>
+            <h5 class="text-lg font-semibold mb-4">Resources</h5>
+            <ul class="space-y-2">
+              <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Help Center</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Tutorials</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Privacy</a></li>
+            </ul>
+          </div>
+          <div>
+            <h5 class="text-lg font-semibold mb-4">Connect</h5>
+            <div class="flex space-x-4">
+              <a href="#" class="text-gray-400 hover:text-white transition-colors text-xl">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-white transition-colors text-xl">
+                <i class="fab fa-facebook"></i>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-white transition-colors text-xl">
+                <i class="fab fa-instagram"></i>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-white transition-colors text-xl">
+                <i class="fab fa-github"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="border-t border-gray-800 pt-8 text-center">
+          <p class="text-gray-400">© 2025 Draw Motion. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- custom alert box for image saving -->
+    <div id="customAlert" class="fixed top-24 right-3 flex items-center space-x-3 bg-green-900 text-white px-6 py-3 rounded-xl shadow-lg transition-all transform scale-95 opacity-0">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <span class="text-lg font-semibold">Image saved successfully!</span>
+      <button onclick="hideAlert()" class="hover:text-gray-200">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+      </button>
+  </div>
+
+  <!-- <div id="customAlert" class="fixed top-5 right-5 flex items-center space-x-3 bg-green-500 text-white px-6 py-3 rounded-xl shadow-lg transition-all transform scale-95 opacity-0 pointer-events-none">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+    </svg>
+    <span class="text-lg font-semibold">Image saved successfully!</span>
+    <button onclick="hideAlert()" class="hover:text-gray-200">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+    </button>
+</div> -->
+
+    <div id="loginModal" class="modal">
+      <div class="modal-content">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold gradient-text">Welcome Back</h2>
+          <!-- <button class="close-modal text-gray-500 hover:text-gray-700">
+            <i class="fas fa-times"></i>
+          </button> -->
+        </div>
+        <form id="loginForm" class="space-y-4">
+          <div>
+            <label class="block text-gray-700 mb-2">Email</label>
+            <input 
+              type="email" 
+              name="email"
+              class="input-field" 
+              required 
+              placeholder="Enter your email"
+            />
+          </div>
+          <div>
+            <label class="block text-gray-700 mb-2">Password</label>
+            <div class="relative">
+              <input 
+                type="password" 
+                name="password"
+                class="input-field pr-10" 
+                required 
+                placeholder="Enter your password"
+              />
+              <button 
+                type="button"
+                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                onclick="togglePassword(this)"
+              >
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary w-full">
+            Login
+          </button>
+          <div class="form-feedback"></div>
+        </form>
+        <div class="mt-6 text-center">
+          <p class="text-gray-600">
+            Don't have an account?
+            <button id="showRegister" class="text-indigo-600 hover:text-indigo-800 font-medium">
+              Register
+            </button>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div id="profileModal" class="modal">
+      <div class="modal-content">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold gradient-text">Profile</h2>
+          <!-- <button class="close-modal text-gray-500 hover:text-gray-700" onclick="closeProfileModal()">
+            <i class="fas fa-times"></i>
+          </button> -->
+        </div>
+        <div class="text-center">
+          <i class="fas fa-user-circle text-6xl text-gray-700 mb-4"></i>
+          <h3 id="profileName" class="text-xl font-semibold"></h3>
+          <p id="profileEmail" class="text-gray-600"></p>
+        </div>
+        <div class="mt-6 flex flex-col gap-4">
+          <!-- <input type="file" id="imageInput" accept="image/*" class="mb-2" />
+          <button id="saveBtn" class="btn btn-secondary w-full">Save Image</button> -->
+          <button id="showHistory" class="btn btn-secondary w-full">Show History</button>
+          <button id="logoutBtn" class="btn btn-primary w-full">Logout</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- History Modal -->
+    <div id="historyModal" class="modal">
+      <div class="modal-content">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold gradient-text">History</h2>
+          <!-- <button class="close-modal text-gray-500 hover:text-gray-700" onclick="closeHistoryModal()">
+            <i class="fas fa-times"></i>
+          </button> -->
+        </div>
+        <div id="historyContainer" class="grid grid-cols-2 gap-4">
+          <!-- Saved images will be loaded here dynamically -->
+          <p id="noHistoryText" class="text-gray-500 text-center"></p>
+        </div>
+      </div>
+    </div>
+
+    <div id="registerModal" class="modal">
+      <div class="modal-content">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold gradient-text">Create Account</h2>
+          <!-- <button class="close-modal text-gray-500 hover:text-gray-700">
+            <i class="fas fa-times"></i>
+          </button> -->
+        </div>
+        <form id="registerForm" class="space-y-4">
+          <div>
+            <label class="block text-gray-700 mb-2">Name</label>
+            <input 
+              type="text" 
+              name="name"
+              class="input-field" 
+              required 
+              placeholder="Enter your name"
+            />
+          </div>
+          <div>
+            <label class="block text-gray-700 mb-2">Email</label>
+            <input 
+              type="email" 
+              name="email"
+              class="input-field" 
+              required 
+              placeholder="Enter your email"
+            />
+          </div>
+          <div>
+            <label class="block text-gray-700 mb-2">Password</label>
+            <div class="relative">
+              <input 
+                type="password" 
+                name="password"
+                class="input-field pr-10" 
+                required 
+                placeholder="Choose a password"
+              />
+              <button 
+                type="button"
+                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                onclick="togglePassword(this)"
+              >
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary w-full">
+            Register
+          </button>
+          <div class="form-feedback"></div>
+        </form>
+        <div class="mt-6 text-center">
+          <p class="text-gray-600">
+            Already have an account?
+            <button id="showLogin" class="text-indigo-600 hover:text-indigo-800 font-medium">
+              Login
+            </button>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+    <script>
+      function togglePassword(button) {
+        const input = button.parentElement.querySelector('input');
+        const icon = button.querySelector('i');
+        
+        if (input.type === 'password') {
+          input.type = 'text';
+          icon.classList.remove('fa-eye');
+          icon.classList.add('fa-eye-slash');
+        } else {
+          input.type = 'password';
+          icon.classList.remove('fa-eye-slash');
+          icon.classList.add('fa-eye');
+        }
+      }
+      document.querySelectorAll('.tool-button').forEach(button => {
+        button.addEventListener('click', function() {
+          document.querySelectorAll('.tool-button').forEach(btn => btn.classList.remove('selected-tool'));
+          this.classList.add('selected-tool');
+        });
+      });
+    </script>
+
+    <script type="module" src="/main.js"></script>
+    <script type="module" src="/auth.js"></script>
+    
+  </body>
+</html>
